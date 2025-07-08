@@ -45,8 +45,8 @@ handleCommandEvent.moduleError=Having some unexpected error when using command %
 
 # includes/handle/handleCreateDatabase.js
 
-handleCreateDatabase.newThread=ryuko - new group detected %1\n
-handleCreateDatabase.newUser=ryuko - new user detected %1\n
+handleCreateDatabase.newThread=Joy - new group detected %1\n
+handleCreateDatabase.newUser=Joy - new user detected %1\n
 
 # includes/handle/handleEvent.js
 
