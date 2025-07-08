@@ -2,7 +2,7 @@ module.exports.config = {
   name: "prefix",
   version: "1.0.0",
   permission: 0,
-  credits: "ryuko",
+  credits: "Joy",
   prefix: true,
   description: "guide",
   category: "system",
@@ -24,11 +24,11 @@ module.exports.handleEvent = async ({ event, api, Threads }) => {
   arr.forEach(i => {
     let str = i[0].toUpperCase() + i.slice(1);
     if (body === i.toUpperCase() | body === i | str === body) {
-		const prefix = threadSetting.PREFIX || global.config.PREFIX;
+    const prefix = threadSetting.PREFIX || global.config.PREFIX;
       if (config.PREFIX == null) {
-        return api.shareContact(`Bot prefix: ${global.config.PREFIX}`, api.getCurrentUserID(), event.threadID);
+        return api.shareContact(`╭╼|━━━━━━━━━━━━━━|╾╮\n𝐏𝐫𝐞𝐟𝐢𝐱: ${global.config.PREFIX}\n╰╼|━━━━━━━━━━━━━━|╾╯\n\n╭╼|━━━━━━━━━━━━━━|╾╮\n𝐁𝐨𝐭 𝐎𝐰𝐧𝐞𝐫: 𝐉𝐨𝐲 𝐀𝐡𝐦𝐞𝐝\n 𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤: https://www.facebook.com/profile.php?id=100001435123762\n ╰╼|━━━━━━━━━━━━━━|╾╯`, api.getCurrentUserID(), event.threadID);
       }
-      else return api.shareContact(`bot prefix : ${global.config.PREFIX}`, api.getCurrentUserID(), event.threadID);
+      else return api.shareContact(`╭╼|━━━━━━━━━━━━━━|╾╮\n𝐏𝐫𝐞𝐟𝐢𝐱: ${global.config.PREFIX}\n╰╼|━━━━━━━━━━━━━━|╾╯\n\n╭╼|━━━━━━━━━━━━━━|╾╮\n𝐁𝐨𝐭 𝐎𝐰𝐧𝐞𝐫: 𝐉𝐨𝐲 𝐀𝐡𝐦𝐞𝐝\n 𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤: https://www.facebook.com/profile.php?id=100001435123762\n ╰╼|━━━━━━━━━━━━━━|╾╯`, api.getCurrentUserID(), event.threadID);
     }
 
   });
