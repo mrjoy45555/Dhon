@@ -1,7 +1,7 @@
 module.exports.config = {
   name: "xona",
   version: "1.0.0", 
-  permission: 0,
+  permission: 2,
   credits: "Mohammad Rahad",
   description: "", 
   prefix: true,
