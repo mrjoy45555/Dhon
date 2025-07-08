@@ -1,31 +1,61 @@
+const axios = require("axios");
+
 module.exports.config = {
   name: "bot",
-  version: "0.0.2",
+  version: "1.0.1",
   permission: 0,
   prefix: false,
-  credits: "Rahad",
-  description: "fun",
-  category: "admin",
-  usages: "",
+  credits: "Joy Ahmed",
+  description: "Chatbot with GitHub JSON replies",
+  category: "fun",
+  usages: "bot [question]",
   cooldowns: 5,
 };
 
-module.exports.run = async function({ api, event, args, Users }) {
-    const axios = require("axios");
-    const request = require("request");
-    const fs = require("fs-extra");
-    const prompt = args.join(" ");
-    var id = event.senderID;
-    var name = await 
-Users.getNameUser(event.senderID);
-    var tl = ["আমি এখন জয় বস এর সাথে বিজি আছি", "what are you asking me to do?", "I love you baby meye hole chipay aso", "Love you 3000-😍💋💝", "ji bolen ki korte pari ami apnar jonno?","আমাকে না ডেকে আমার বস জয়কে ডাকেন! link: https://www.facebook.com/100001435123762", "Ato daktasen kn bujhlam na 😡", "jan bal falaba,🙂","ask amr mon vlo nei dakben na🙂", "Hmm jan ummah😘😘","jang hanga korba 🙂🖤","iss ato dako keno lojja lage to 🫦🙈","suna tomare amar valo lage,🙈😽","জি তুমি কি আমাকে ডেকেছো 😇🖤🥀","আমাকে আমাকে না ডেকে আমার বসকে ডাকো এই নেও LINK :- https://www.facebook.com/100001435123762","Hmmm sona 🖤 meye hoile kule aso ar sele hoile kule new 🫂😘","Yah This Bot creator : ITS,JOY ((J.T))     link => https://www.facebook.com/100001435123762","হা বলো, শুনছি আমি 🤸‍♂️🫂","আহ শোনা আমার আমাকে এতো ডাক্তাছো কেনো আসো বুকে আশো🙈", "তুমি কি আমাকে ডাকলে বন্ধু 🤖?", "I love you 💝", "ভালোবাসি তোমাকে 🤖", "Hi, I'm massanger Bot i can help you.?🤖","Use callad to contact admin!", "Hi, Don't disturb 🤖 🚘Now I'm going to Feni,Bangladesh..bye", "Hi, 🤖 i can help you~~~~"];
-    var rand = tl[Math.floor(Math.random() * tl.length)];
-    if (!prompt) return api.sendMessage(`╭────────────❍\n╰➤ 👤 𝐃𝐞𝐚𝐫 『${name}』,\n╰➤ 🗣️ ${rand}\n╰─────────────────➤`, event.threadID, event.messageID);
-    const res = await axios.get(`https://simsimi.fun/api/v2/?mode=talk&lang=bn&message=${prompt}&filter=true`);
-    console.log(res.data);
-    const respond = res.data.success;
+module.exports.run = async function ({ api, event, args, Users }) {
+  const name = await Users.getNameUser(event.senderID);
+  const prompt = args.join(" ").trim().toLowerCase();
 
-    return api.sendMessage({
-        body: respond
-    }, event.threadID, event.messageID);
+  const fallbackReplies = [
+    "আমি এখন জয় বস এর সাথে বিজি আছি",
+    "what are you asking me to do?",
+    "I love you baby meye hole chipay aso",
+    "Love you 3000-😍💋💝",
+    "ji bolen ki korte pari ami apnar jonno?",
+    "আমাকে না ডেকে আমার বস জয়কে ডাকেন! link: https://www.facebook.com/100001435123762",
+    "Hmm jan ummah😘😘",
+    "তুমি কি আমাকে ডাকলে বন্ধু 🤖?",
+    "ভালোবাসি তোমাকে 🤖",
+    "Hi, 🤖 i can help you~~~~"
+  ];
+
+  // ➤ ইউজার কিছু না লিখলে
+  if (!prompt) {
+    const rand = fallbackReplies[Math.floor(Math.random() * fallbackReplies.length)];
+    return api.sendMessage(
+      `╭────────────❍\n╰➤ 👤 ${name},\n╰➤ 🗣️ ${rand}\n╰─────────────────➤`,
+      event.threadID,
+      event.messageID
+    );
+  }
+
+  // ➤ ইউজার প্রশ্ন দিলে — JSON থেকে match করো
+  try {
+    const res = await axios.get(`https://raw.githubusercontent.com/JUBAED-AHMED-JOY/Joy/main/api.json`);
+    const dataset = res.data.data;
+
+    // প্রশ্ন match করো (exact match, lower case)
+    const match = dataset.find(item => item.ask.toLowerCase() === prompt);
+
+    if (match) {
+      return api.sendMessage(match.reply, event.threadID, event.messageID);
+    } else {
+      return api.sendMessage("🤖 আমি এটা শিখিনি!", event.threadID, event.messageID);
+    }
+
+  } catch (err) {
+    console.error("❌ Bot API Error:", err.message);
+    const rand = fallbackReplies[Math.floor(Math.random() * fallbackReplies.length)];
+    return api.sendMessage(`🤖 ${rand}`, event.threadID, event.messageID);
+  }
 };
