@@ -104,7 +104,7 @@ module.exports.run = async function({ api, event, args }) {
       
       try {
         const idOrUrl = args.slice(1).join(" ");
-        const res = await axios.get(`${apiUrl}/api/random/remove?id=${encodeURIComponent(idOrUrl)}&key=romeo`);
+        const res = await axios.get(`${apiUrl}/api/random/remove?id=${encodeURIComponent(idOrUrl)}`);
         return api.sendMessage(res.data.msg || `✅ Video removed successfully\nID/URL: ${idOrUrl}`, event.threadID, event.messageID);
       } catch (error) {
         throw error;
