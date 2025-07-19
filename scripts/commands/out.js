@@ -1,18 +1,21 @@
-module.exports = {
-  config: {
-    name: "out",
-  version: "1.0.5",
-  credits: "nayan",
-  prefix: false,
-  permission: 2,
-  description: "out bot",
-  category: "admin",
-  cooldowns: 5
-},
+module.exports.config = {
+  name: "out",
+  version: "1.0.0",
+  permission: 2, // Only admin-level users
+  prefix: true,
+  credits: "Joy",
+  description: "Bot leave the group",
+  category: "system",
+  usages: ".out",
+  cooldowns: 3
+};
 
-start: async function({ nayan, events, args }) {
-        if (!args[0]) return nayan.removeUserFromGroup(nayan.getCurrentUserID(), events.threadID);
-  nayan.reply("gd bye", events.threadID)
-        if (!isNaN(args[0])) return nayan.removeUserFromGroup(nayan.getCurrentUserID(), args.join(" "));
-}
-}
+module.exports.run = async function ({ api, event }) {
+  const threadID = event.threadID;
+  const senderID = event.senderID;
+
+  // Optional confirmation message
+  api.sendMessage("👋 Bidding farewell... Joy Bot is leaving this group!", threadID, () => {
+    api.removeUserFromGroup(api.getCurrentUserID(), threadID); // Remove bot
+  });
+};
