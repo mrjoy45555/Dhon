@@ -1,28 +1,35 @@
 module.exports.config = {
   name: "time",
-  version: "1.0.0",
-  permssion: 0,
+  version: "1.1.0",
+  permission: 0,              
   prefix: true,
-  credits: "nayan",
-  description: "( 𝙀𝙭𝙖𝙘𝙩 𝙩𝙞𝙢𝙚 & 𝙙𝙖𝙩𝙚 )",
+  credits: "Joy",
+  description: "Exact time & date",
   category: "Time and Date",
-  usages: "( Exact time )",
+  usages: ".time",
   cooldowns: 0,
   dependencies: []
 };
 
-module.exports.run = async function ({ api, event, args, Currencies, Users }) {
+module.exports.run = async function ({ api, event, Users }) {
   const moment = require("moment-timezone");
-  var supremo = moment.tz('Asia/Dhaka').format('HH:mm:ss');
-  var draven = moment.tz('Asia/Manila').format('D/MM/YYYY');
-  var kiel = moment.tz('Asia/Manila').format('dddd');
-  if (kiel == 'Sunday') kiel = 'Sunday'
-  if (kiel == 'Monday') kiel = 'Monday'
-  if (kiel == 'Tuesday') kiel = 'Tuesday'
-  if (kiel == 'Wednesday') kiel = 'Wednesday'
-  if (kiel == "Thursday") kiel = 'Thursday'
-  if (kiel == 'Friday') kiel = 'Friday'
-  if (kiel == 'Saturday') kiel = 'Saturday'
-  let name = await Users.getNameUser(event.senderID);
-  return api.sendMessage(`〘───── •『 𝙏𝙞𝙢𝙚 』• ─────〙\n𝙃𝙚𝙡𝙡𝙤「﹝${name}﹞」\n𝙏𝙝𝙚 𝙥𝙧𝙚𝙨𝙚𝙣𝙩 𝙩𝙞𝙢𝙚 : ${supremo} \n𝘿𝙖𝙮 : ${draven} (${kiel})\n〘───── •『 𝙏𝙞𝙢𝙚 』• ─────〙`, event.threadID, event.messageID)
-}
+
+  // Asia/Dhaka — একই টার্গেট TZ-এ সবই রাখলাম
+  const nowTime = moment.tz("Asia/Dhaka").format("HH:mm:ss");
+  const nowDate = moment.tz("Asia/Dhaka").format("D/MM/YYYY");
+  const dayName = moment.tz("Asia/Dhaka").format("dddd");
+
+  const name = await Users.getNameUser(event.senderID);
+
+  const msg =
+`╭╼| 🕒 𝗧𝗜𝗠𝗘 𝗣𝗔𝗡𝗘𝗟 |╾╮
+┃
+┃ 👋 𝗛𝗲𝗹𝗹𝗼 : ${name}
+┃ 🕑 𝗧𝗶𝗺𝗲   : ${nowTime}
+┃ 📅 𝗗𝗮𝘁𝗲   : ${nowDate}
+┃ 📆 𝗗𝗮𝘆    : ${dayName}
+┃
+╰╼|━━━━━━━━━━━━━━━━|╾╯`;
+
+  return api.sendMessage(msg, event.threadID, event.messageID);
+};
