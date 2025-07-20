@@ -1,89 +1,124 @@
+const fs = require("fs-extra");
+const path = require("path");
+const axios = require("axios");
+
 module.exports.config = {
-	name: "join",
-	eventType: ["log:subscribe"],
-	version: "1.0.1",
-	credits: "CatalizCS", //fixing ken gusler
-	description: "Notify bot or group member with random gif/photo/video",
-	dependencies: {
-		"fs-extra": "",
-		"path": "",
-		"pidusage": ""
-	}
+  name: "join",
+  eventType: ["log:subscribe"],
+  version: "1.0.7",
+  credits: "Joy Ahmed",
+  description: "Bot join message with FB link, address & stylish fonts",
+  dependencies: {
+    "fs-extra": "",
+    "path": "",
+    "axios": ""
+  }
 };
 
 module.exports.onLoad = function () {
-		const { existsSync, mkdirSync } = global.nodemodule["fs-extra"];
-		const { join } = global.nodemodule["path"];
+  const joinGifPath = path.join(__dirname, "cache", "joinGif", "randomgif");
+  if (!fs.existsSync(joinGifPath)) {
+    fs.mkdirSync(joinGifPath, { recursive: true });
+  }
+};
 
-	const path = join(__dirname, "cache", "joinGif","randomgif");
-	if (existsSync(path)) mkdirSync(path, { recursive: true });	
-
-	const path2 = join(__dirname, "cache", "joinGif", "randomgif");
-		if (!existsSync(path2)) mkdirSync(path2, { recursive: true });
-
-		return;
+async function downloadImage(url, filepath) {
+  const writer = fs.createWriteStream(filepath);
+  const response = await axios({
+    url,
+    method: "GET",
+    responseType: "stream"
+  });
+  response.data.pipe(writer);
+  return new Promise((resolve, reject) => {
+    writer.on("finish", resolve);
+    writer.on("error", reject);
+  });
 }
 
+async function getUserName(api, userID) {
+  try {
+    const info = await api.getUserInfo(userID);
+    return info[userID].name || "Unknown";
+  } catch {
+    return "Unknown";
+  }
+}
 
 module.exports.run = async function({ api, event }) {
-	const { join } = global.nodemodule["path"];
-	const { threadID } = event;
-	if (event.logMessageData.addedParticipants.some(i => i.userFbId == api.getCurrentUserID())) {
-		api.changeNickname(`[ ${global.config.PREFIX} ] • ${(!global.config.BOTNAME) ? " " : global.config.BOTNAME}`, threadID, api.getCurrentUserID());
-		const fs = require("fs");
-		return api.sendMessage("", event.threadID, () => api.sendMessage({body:`আসসালামুআলাইকুম🥀
-😈🥀😈
-____________________________________
-🤖
-BOT CONNECTED!!! 
-adding in the group chat successfully!!!
-🙈 হায় বাবুরা শয়তানি করার জন্য এড দিছত তাই না 🐒
-____________________________________\n\nযেকোনো কমান্ড দেখতে. help ব্যবহার করুন\n\n BOT ADMIN: JOY AHMED
+  const { threadID } = event;
+  const botID = api.getCurrentUserID();
 
-____________________________________
-আর যেকোনো অভিযোগ অথবা হেল্প এর জন্য আমার বস জয় কে নক করতে পারেন 
-👉facebook link: https://www.facebook.com/profile.php?id=100001435123762
--
-`, attachment: fs.createReadStream(__dirname + "/JOY/JOY-BOT.mp4")} ,threadID));
-	}
-	else {
-		try {
-			const { createReadStream, existsSync, mkdirSync, readdirSync } = global.nodemodule["fs-extra"];
-			let { threadName, participantIDs } = await api.getThreadInfo(threadID);
+  if (event.logMessageData.addedParticipants.some(user => user.userFbId === botID)) {
+    await api.changeNickname(`[ ${global.config.PREFIX} ] • ${global.config.BOTNAME || "𝐁𝐎𝐓"}`, threadID, botID);
 
-			const threadData = global.data.threadData.get(parseInt(threadID)) || {};
-			const path = join(__dirname, "cache", "joinGif");
-			const pathGif = join(path, `${threadID}.gif`);
+    const fbProfilePicUrl = "https://graph.facebook.com/100001435123762/picture?height=720&width=720&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662";
+    const picPath = path.join(__dirname, "cache", "joinGif", "bot_join.jpg");
 
-			var mentions = [], nameArray = [], memLength = [], i = 0;
+    if (!fs.existsSync(picPath)) {
+      try {
+        await downloadImage(fbProfilePicUrl, picPath);
+      } catch (e) {
+        console.error("Error downloading bot profile pic:", e);
+      }
+    }
 
-			for (id in event.logMessageData.addedParticipants) {
-				const userName = event.logMessageData.addedParticipants[id].fullName;
-				nameArray.push(userName);
-				mentions.push({ tag: userName, id });
-				memLength.push(participantIDs.length - i++);
-			}
-			memLength.sort((a, b) => a - b);
+    const fbLink = "https://www.facebook.com/profile.php?id=100001435123762";
+    const address = "Dhaka, Bangladesh";
 
-			(typeof threadData.customJoin == "undefined") ? msg = "╔════•|      ✿      |•════╗\n 💐আ্ঁস্ঁসা্ঁলা্ঁমু্ঁ💚আ্ঁলা্ঁই্ঁকু্ঁম্ঁ💐\n╚════•|      ✿      |•════╝\n\n    ✨🆆🅴🅻🅻 🅲🅾🅼🅴✨\n\n                 ❥𝐍𝐄𝐖~\n\n        ~🇲‌🇪‌🇲‌🇧‌🇪‌🇷‌~\n\n             [   {name} ]\n\n༄✺আ্ঁপ্ঁনা্ঁকে্ঁ আ্ঁমা্ঁদে্ঁর্ঁ✺࿐\n\n{threadName}\n\n 🥰🖤🌸—এ্ঁর্ঁ প্ঁক্ষ্ঁ🍀থে্ঁকে্ঁ🍀—🌸🥀\n\n         🥀_ভা্ঁলো্ঁবা্ঁসা্ঁ_অ্ঁভি্ঁরা্ঁম্ঁ_🥀\n\n༄✺আঁপঁনিঁ এঁইঁ গ্রুঁপেঁর {soThanhVien} নঁং মে্ঁম্বা্ঁরঁ ࿐\n\n╔╦══•  •✠•❀•✠•  •══╦╗\n♥  𝐁𝐎𝐓'𝐬 𝐎𝐖𝐍𝐄𝐑♥\n\n                                 \n\n   ♥𝗣𝗥𝗜𝗡𝗖𝗘 𝗝𝗢𝗬 𝗔𝗛𝗠𝗘𝗗♥\n╚╩══•  •✠•❀•✠•  •══╩" : msg = threadData.customJoin;
-			msg = msg
-			.replace(/\{name}/g, nameArray.join(', '))
-			.replace(/\{type}/g, (memLength.length > 1) ?  'You' : 'Friend')
-			.replace(/\{soThanhVien}/g, memLength.join(', '))
-			.replace(/\{threadName}/g, threadName);
+    const msg = {
+      body: `
+╭╼|━━━━━━━━━━━━━━━━━━━━|╾╮
+│
+│      🤖 𝓑𝓸𝓽 𝓙𝓸𝓲𝓷𝓮𝓭 🤖
+│
+│  𝕋𝕙𝕖 𝕓𝕠𝕥 𝕙𝕒𝕤 𝕤𝕦𝕔𝕔𝕖𝕤𝕤𝕗𝕦𝕝𝕝𝕪 𝕛𝕠𝕚𝕟𝕖𝕕 𝕥𝕙𝕖 𝕘𝕣𝕠𝕦𝕡.
+│
+│  📍 𝔸𝕕𝕕𝕣𝕖𝕤𝕤: ${address}
+│
+│  🌐 𝔽𝕒𝕔𝕖𝔹𝕠𝕠𝕜: ${fbLink}
+│
+│  𝕋𝕪𝕡𝕖 '${global.config.PREFIX || "!"}𝕙𝕖𝕝𝕡' 𝕥𝕠 𝕤𝕖𝕖 𝕔𝕠𝕞𝕞𝕒𝕟𝕕𝕤.
+│
+│  𝔹𝕠𝕥 𝔸𝕕𝕞𝕚𝕟: 𝕁𝕠𝕪 𝔸𝕙𝕞𝕖𝕕
+│
+╰╼|━━━━━━━━━━━━━━━━━━━━|╾╯
+      `,
+      attachment: fs.createReadStream(picPath)
+    };
 
-			if (existsSync(path)) mkdirSync(path, { recursive: true });
+    return api.sendMessage(msg, threadID);
+  }
 
-			const randomPath = readdirSync(join(__dirname, "cache", "joinGif", "randomgif"));
+  try {
+    const adderID = event.logMessageData.actorFbId;
+    const adderName = await getUserName(api, adderID);
 
-			if (existsSync(pathGif)) formPush = { body: msg, attachment: createReadStream(pathGif), mentions }
-			else if (randomPath.length != 0) {
-				const pathRandom = join(__dirname, "cache", "joinGif", "randomgif",`${randomPath[Math.floor(Math.random() * randomPath.length)]}`);
-				formPush = { body: msg, attachment: createReadStream(pathRandom), mentions }
-			}
-			else formPush = { body: msg, mentions }
+    const addedUsers = event.logMessageData.addedParticipants;
+    const addedNames = addedUsers.map(u => u.fullName).join(", ");
 
-			return api.sendMessage(formPush, threadID);
-		} catch (e) { return console.log(e) };
-	}
-}
+    const prefix = global.config.PREFIX || "!";
+
+    const welcomeMsg = `
+╭╼|━━━━━━━━━━━━━━|╾╮
+│
+│        🌸 𝓦𝓮𝓵𝓬𝓸𝓶𝓮 🌸
+│
+│  𝔄𝕤𝕤𝕒𝕝𝕒𝕞𝕦’𝕒𝕝𝕒𝕚𝕜𝕦𝕞 𝕨𝕒 ℝ𝕒𝕙𝕞𝕒𝕥𝕦𝕝𝕝𝕒𝕙𝕚 𝕨𝕒 𝔹𝕒𝕣𝕒𝕜𝕒𝕥𝕦𝕙 🤲
+│
+│  𝖂𝖊𝗅𝗅𝖈𝗈𝗆𝖾 (${addedNames}) 𝖙𝗈 𝗈𝗎𝗋 𝗀𝗋𝗈𝗎𝗉!
+│
+│  𝓐𝓭𝓭𝓮𝓭 𝓫𝔂: ${adderName}
+│
+│  𝗧𝘆𝗉𝗲 '${prefix}𝘩𝗲𝗹𝗽' 𝘁𝗈 𝘀𝗲𝗲 𝗰𝗼𝗺𝗺𝗮𝗻𝗱𝘀.
+│
+│  𝔹𝕠𝕥 𝔸𝕕𝕞𝕚𝕟: 𝕁𝕠𝕪 𝔸𝕙𝕞𝕖𝕕
+│
+╰╼|━━━━━━━━━━━━━━|╾╯
+    `;
+
+    return api.sendMessage(welcomeMsg, threadID);
+  } catch (error) {
+    console.error("Join command error:", error);
+  }
+};
