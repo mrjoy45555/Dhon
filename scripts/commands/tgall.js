@@ -1,5 +1,5 @@
 module.exports.config = {
-  name: "tag",
+  name: "all",
   version: "1.0.0",
   permission: 0,
   credits: "Joy Ahmed",
@@ -24,7 +24,7 @@ module.exports.run = async function({ api, event, args }) {
     }
   }
 
-  const message = args.join(" ") || "সবাই এখানে আসো! 👇";
+  const message = args.join(" ") || "JOY AHMED";
 
   return api.sendMessage({
     body: message,
