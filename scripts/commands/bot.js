@@ -83,7 +83,7 @@ module.exports.run = async function ({ api, event, args, Users }) {
 
     // Teach API call
     try {
-      const res = await axios.get(`${apiUrl}?teach=${encodeURIComponent(question)}&reply=${encodeURIComponent(answer)}&senderID=${event.senderID}`);
+      const res = await axios.get(`${apiUrl}/sim?type=teach&ask=${encodeURIComponent(question)}&ans=${encodeURIComponent(answer)}&senderID=${event.senderID}`);
       return api.sendMessage(
         `✅ শেখানো হয়েছে!\n❝${question}❞\nএর উত্তর: ${answer}`,
         event.threadID,
@@ -101,8 +101,8 @@ module.exports.run = async function ({ api, event, args, Users }) {
 
   // Normal chat message - API থেকে উত্তর নেবে
   try {
-    const res = await axios.get(`${apiUrl}?ask=${encodeURIComponent(input)}&senderID=${event.senderID}`);
-    const reply = res.data.reply;
+    const res = await axios.get(`${apiUrl}/sim?type=ask&ask=${encodeURIComponent(input)}&senderID=${event.senderID}`);
+    const reply = res.data.data.msg;
 
     if (!reply) {
       const rand = fallbackReplies[Math.floor(Math.random() * fallbackReplies.length)];
