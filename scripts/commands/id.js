@@ -1,5 +1,5 @@
 module.exports.config = {
-  name: "id",
+  name: "tag",
   version: "1.1.0",
   permission: 0,
   credits: "Joy Ahmed",
@@ -18,7 +18,7 @@ module.exports.run = async function({ api, event, args }) {
     uid = event.messageReply.senderID;
     const userInfo = await api.getUserInfo(uid);
     name = userInfo[uid]?.name || "ব্যবহারকারী";
-    message = args.join(" ") || "তোমাকে মেনশন করা হয়েছে!";
+    message = args.join(" ") || "JOY AHMED";
   }
   // না হলে args দিয়ে UID
   else {
