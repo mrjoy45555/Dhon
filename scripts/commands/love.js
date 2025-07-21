@@ -7,80 +7,97 @@ module.exports.config = {
   name: "love",
   version: "2.0.0",
   permission: 0,
-  credits: "Joy", // ⚠️ এই লাইন চেঞ্জ করলে কাজ করবে না
-  description: "Create a love frame with you and the mentioned person",
+  credits: "Joy Ahmed",
+  description: "Make a romantic love frame with someone you mention",
   prefix: true,
   category: "Love",
-  usages: "@mention",
-  cooldowns: 5,
+  usages: "[tag]",
+  cooldowns: 5
 };
 
 module.exports.onLoad = async () => {
-  const filePath = path.resolve(__dirname, "cache/canvas/crush11115522.png");
-  const dirPath = path.resolve(__dirname, "cache/canvas");
-  if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
-  if (!fs.existsSync(filePath)) {
-    const { downloadFile } = global.utils;
-    await downloadFile("https://i.ibb.co/JMCj67j/crush11115522.jpg", filePath); // <-- ফ্রেম ইমেজ URL দিন
+  const cachePath = path.resolve(__dirname, "cache", "canvas");
+  const bgPath = path.join(cachePath, "joy.png");
+
+  if (!fs.existsSync(cachePath)) fs.mkdirSync(cachePath, { recursive: true });
+
+  if (!fs.existsSync(bgPath)) {
+    const imageURL = "https://drive.google.com/uc?id=1BhOoXAXx33YVsENF0heQRDtg17Z8YgNV"; // Background image
+    const res = await axios.get(imageURL, { responseType: "arraybuffer" });
+    fs.writeFileSync(bgPath, Buffer.from(res.data));
   }
 };
 
-async function circle(imagePath) {
-  const img = await jimp.read(imagePath);
-  img.circle();
-  return await img.getBufferAsync("image/png");
+async function circle(imgPath) {
+  const image = await jimp.read(imgPath);
+  image.circle();
+  return image.getBufferAsync("image/png");
 }
 
 async function makeImage({ one, two }) {
-  const canvasPath = path.resolve(__dirname, "cache/canvas");
-  const bg = await jimp.read(path.join(canvasPath, "crush11115522.png"));
-  const p1 = path.join(canvasPath, `avt_${one}.png`);
-  const p2 = path.join(canvasPath, `avt_${two}.png`);
-  const final = path.join(canvasPath, `love_${one}_${two}.png`);
+  const cacheDir = path.resolve(__dirname, "cache", "canvas");
+  const bg = await jimp.read(path.join(cacheDir, "joy.png"));
 
-  const avt1 = (await axios.get(`https://graph.facebook.com/${one}/picture?width=512&height=512&access_token=6628568379|c1e620fa708a1d5696fb991c1bde5662`, { responseType: "arraybuffer" })).data;
-  const avt2 = (await axios.get(`https://graph.facebook.com/${two}/picture?width=512&height=512&access_token=6628568379|c1e620fa708a1d5696fb991c1bde5662`, { responseType: "arraybuffer" })).data;
+  const avt1Path = path.join(cacheDir, `avt_${one}.png`);
+  const avt2Path = path.join(cacheDir, `avt_${two}.png`);
+  const finalPath = path.join(cacheDir, `love_${one}_${two}.png`);
 
-  fs.writeFileSync(p1, Buffer.from(avt1));
-  fs.writeFileSync(p2, Buffer.from(avt2));
+  const getAvt = async (uid, savePath) => {
+    const url = `https://graph.facebook.com/${uid}/picture?width=512&height=512&access_token=6628568379|c1e620fa708a1d5696fb991c1bde5662`;
+    const res = await axios.get(url, { responseType: "arraybuffer" });
+    fs.writeFileSync(savePath, Buffer.from(res.data));
+  };
 
-  const circle1 = await jimp.read(await circle(p1));
-  const circle2 = await jimp.read(await circle(p2));
+  await getAvt(one, avt1Path);
+  await getAvt(two, avt2Path);
 
-  bg.composite(circle1.resize(196, 196), 98, 141)
-    .composite(circle2.resize(193, 193), 427, 143);
+  const circ1 = await jimp.read(await circle(avt1Path));
+  const circ2 = await jimp.read(await circle(avt2Path));
 
-  fs.writeFileSync(final, await bg.getBufferAsync("image/png"));
+  bg.composite(circ1.resize(196, 196), 98, 141);
+  bg.composite(circ2.resize(193, 193), 427, 143);
 
-  fs.unlinkSync(p1);
-  fs.unlinkSync(p2);
+  const buffer = await bg.getBufferAsync("image/png");
+  fs.writeFileSync(finalPath, buffer);
 
-  return final;
+  fs.unlinkSync(avt1Path);
+  fs.unlinkSync(avt2Path);
+
+  return finalPath;
 }
 
-module.exports.run = async function ({ api, event }) {
-  const { threadID, messageID, senderID, mentions } = event;
-
-
-  const currentCredit = module.exports.config.credits;
-  if (currentCredit !== "Joy") {
-    return api.sendMessage("❌ এই কমান্ডের credits পরিবর্তন করা হয়েছে বলে এটি আর কাজ করবে না!", threadID, messageID);
-  }
-
+module.exports.run = async function ({ event, api, args }) {
+  const senderID = event.senderID;
+  const mentions = event.mentions || {};
   const mentionIDs = Object.keys(mentions);
-  if (!mentionIDs[0]) {
-    return api.sendMessage("⚠️ যার সাথে ফ্রেম বানাতে চান তাকে মেনশন করুন!", threadID, messageID);
+
+  if (!mentionIDs.length) {
+    return api.sendMessage("🥰 যাকে মেনশন করে লাভ ফ্রেম বানাতে চাও, তাকে ট্যাগ করো!", event.threadID, event.messageID);
   }
 
-  const targetID = mentionIDs[0];
-  try {
-    const pathImg = await makeImage({ one: senderID, two: targetID });
-    return api.sendMessage({
-      body: "•🦋💛🌸\n\nবাধিয়ে রেখে লাভ নেই\n উড়িয়ে দিয়ে দেখো\nদিন শেষে ফিরে আসে\n তখনি আগলে রেখো\n\n•😘🦋💛\n𝐂𝐫𝐞𝐚𝐭𝐨𝐫 ━➢ 𝐉𝐨𝐲 𝐀𝐡𝐦𝐞𝐝",
-      attachment: fs.createReadStream(pathImg)
-    }, threadID, () => fs.unlinkSync(pathImg), messageID);
-  } catch (err) {
-    console.log(err);
-    return api.sendMessage("❌ ফ্রেম তৈরিতে সমস্যা হয়েছে!", threadID, messageID);
-  }
+  const taggedID = mentionIDs[0];
+  const imgPath = await makeImage({ one: senderID, two: taggedID });
+
+  const msgBox = `
+╭╼|━━━━━━━━━━━━━━|╾╮
+│ 💖 𝓛𝓸𝓿𝓮 𝓕𝓻𝓪𝓶𝓮 💖
+│ 
+│ 𝓛𝓸𝓿𝓮 𝓲𝓼 𝓷𝓸𝓽 𝓪𝓫𝓸𝓾𝓽 𝓹𝓸𝓼𝓼𝓮𝓼𝓼𝓲𝓷𝓰,
+│ 𝓲𝓽'𝓼 𝓪𝓫𝓸𝓾𝓽 𝓪𝓹𝓹𝓻𝓮𝓬𝓲𝓪𝓽𝓲𝓷𝓰. 💞
+│ 
+│ 💌 “𝐓𝐨 𝐥𝐨𝐯𝐞 𝐚𝐧𝐝 𝐛𝐞 𝐥𝐨𝐯𝐞𝐝 𝐢𝐬 𝐭𝐡𝐞 𝐠𝐫𝐞𝐚𝐭𝐞𝐬𝐭 𝐟𝐞𝐞𝐥𝐢𝐧𝐠.” 💌
+│ 
+│ ✨ 𝓒𝓻𝓮𝓪𝓽𝓸𝓻: 𝒥❍𝓎 𝒜𝒽𝓂𝑒𝒹 ✨
+╰╼|━━━━━━━━━━━━━━|╾╯
+`;
+
+  return api.sendMessage(
+    {
+      body: msgBox,
+      attachment: fs.createReadStream(imgPath)
+    },
+    event.threadID,
+    () => fs.unlinkSync(imgPath),
+    event.messageID
+  );
 };
