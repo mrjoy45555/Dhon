@@ -13,6 +13,11 @@ module.exports.config = {
   cooldowns: 5
 };
 
+// ছোট বক্স স্টাইল ফাংশন
+function smallBox(text) {
+  return `╭╼|━━━━━━━━━━━━━━|╾╮\n${text}\n╰╼|━━━━━━━━━━━━━━|╾╯`;
+}
+
 module.exports.run = async function ({ api, event, args }) {
   const commandList = global.client.commands;
   const prefix = global.config.PREFIX || ".";
@@ -24,15 +29,14 @@ module.exports.run = async function ({ api, event, args }) {
 
     if (!command) {
       return api.sendMessage(
-        "╭╼|━━━━━━|╾╮\n❌ এই নামে কোনো কমান্ড নেই!\n╰╼|━━━━━━|╾╯",
+        smallBox("❌ এই নামে কোনো কমান্ড নেই!"),
         event.threadID,
         event.messageID
       );
     }
 
-    msg += "╭╼|━━━━━━|╾╮\n";
-    msg += `⌨️ 𝐂𝐨𝐦𝐦𝐚𝐧𝐝: ${name}\n`;
-    msg += "╰╼|━━━━━━|╾╯\n\n";
+    msg += smallBox(`⌨️ 𝐂𝐨𝐦𝐦𝐚𝐧𝐝: ${name}`);
+    msg += "\n\n";
 
     msg += `📄 𝐃𝐞𝐬𝐜: ${command.config.description || "নেই"}\n`;
     msg += `📂 𝐂𝐚𝐭𝐞𝐠𝐨𝐫𝐲: ${command.config.category || "Unknown"}\n`;
@@ -43,7 +47,7 @@ module.exports.run = async function ({ api, event, args }) {
     return api.sendMessage(msg, event.threadID, event.messageID);
   }
 
-  // All commands by category
+  // সব কমান্ড ক্যাটাগরি অনুযায়ী আলাদা করা
   const categories = {};
   commandList.forEach((command) => {
     const cat = command.config.category || "Unknown";
@@ -51,18 +55,15 @@ module.exports.run = async function ({ api, event, args }) {
     categories[cat].push(command.config.name);
   });
 
-  msg += "╭╼|━━━━━━|╾╮\n";
-  msg += `🤖 𝐇𝐞𝐥𝐩 𝐌𝐞𝐧𝐮 — ${global.config.BOTNAME || "Merai Bot"}\n`;
-  msg += "╰╼|━━━━━━|╾╯\n\n";
+  msg += smallBox(`🤖 𝐇𝐞𝐥𝐩 𝐌𝐞𝐧𝐮 — ${global.config.BOTNAME || "Merai Bot"}`);
+  msg += "\n\n";
 
   for (const cat in categories) {
-    msg += `📁 𝐂𝐚𝐭𝐞𝐠𝐨𝐫𝐲: ${cat.toUpperCase()}\n`;
-    msg += `➤ ${categories[cat].sort().join(", ")}\n\n`;
+    msg += smallBox(`📁 𝐂𝐚𝐭𝐞𝐠𝐨𝐫𝐲: ${cat.toUpperCase()}`);
+    msg += `\n➤ ${categories[cat].sort().join(", ")}\n\n`;
   }
 
-  msg += "╭╼|━━━━━━|╾╮\n";
-  msg += "👑 𝐁𝐨𝐭 𝐀𝐝𝐦𝐢𝐧 𝐈𝐧𝐟𝐨\n";
-  msg += "╰╼|━━━━━━|╾╯\n\n";
+  msg += smallBox("👑 𝐁𝐨𝐭 𝐀𝐝𝐦𝐢𝐧 𝐈𝐧𝐟𝐨") + "\n\n";
 
   msg += `👤 𝐎𝐰𝐧𝐞𝐫: Joy Ahmed\n`;
   msg += `📞 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩: wa.me/8801709045888\n`;
@@ -79,10 +80,15 @@ module.exports.run = async function ({ api, event, args }) {
     const res = await axios.get(avatarURL, { responseType: "arraybuffer" });
     fs.writeFileSync(path, Buffer.from(res.data, "utf-8"));
 
-    return api.sendMessage({
-      body: msg,
-      attachment: fs.createReadStream(path)
-    }, event.threadID, () => fs.unlinkSync(path), event.messageID);
+    return api.sendMessage(
+      {
+        body: msg,
+        attachment: fs.createReadStream(path)
+      },
+      event.threadID,
+      () => fs.unlinkSync(path),
+      event.messageID
+    );
 
   } catch (e) {
     console.error(e);
