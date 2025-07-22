@@ -1,13 +1,13 @@
 module.exports.config = {
   name: "rainbow",
-  version: "1.0.0",
-  hasPermssion: 0,
-  credits: "Joy",
-  prefix: "true",
-  description: "Randomly change thread color continuously (rainbow effect)",
-  commandCategory: "system",
-  usages: "rainbow [number]",
-  cooldowns: 5
+  version: "1.0.1",
+  permission: 2,
+  credits: "Joy Ahmed",
+  description: "Don't mention admin without reason",
+  prefix: true,
+  category: "group",
+  usages: "rainbow [change]",
+  cooldowns: 5,
 };
 
 module.exports.run = async function ({ api, event, args }) {
