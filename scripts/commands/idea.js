@@ -2,15 +2,15 @@ const fs = require("fs-extra");
 const axios = require("axios");
 
 module.exports.config = {
-    name: "idea",
-    version: "1.0.0",
-    hasPermssion: 2,
-    credits: "Joy",
-    prefix: "true",
-    description: "বন্ধুকে ধারাবাহিকভাবে উপদেশমূলক বার্তা পাঠায়",
-    commandCategory: "info", // <-- Fixed here
-    usages: "@mention",
-    cooldowns: 10,
+  name: "idea",
+  version: "1.0.1",
+  permission: 0,
+  credits: "Joy Ahmed",
+  description: "Don't mention admin without reason",
+  prefix: true,
+  category: "user",
+  usages: "tag",
+  cooldowns: 5,
 
 };
 
