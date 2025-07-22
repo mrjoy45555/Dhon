@@ -6,11 +6,12 @@ module.exports.config = {
     version: "1.0.0",
     hasPermssion: 2,
     credits: "Joy",
+    prefix: "true",
     description: "বন্ধুকে ধারাবাহিকভাবে উপদেশমূলক বার্তা পাঠায়",
-    commandCategory: "motivation",
+    commandCategory: "info", // <-- Fixed here
     usages: "@mention",
     cooldowns: 10,
-    prefix: "true"
+
 };
 
 module.exports.run = async function ({ api, args, event }) {
