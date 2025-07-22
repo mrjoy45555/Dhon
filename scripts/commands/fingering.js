@@ -8,6 +8,7 @@ module.exports.config = {
   version: "1.0.0",
   permission: 0,
   credits: "Joy",
+  prefix: "true",
   description: "A fun image attack between two users!",
   category: "fun",
   usages: "[@mention]",
