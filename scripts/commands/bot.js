@@ -156,7 +156,7 @@ module.exports.run = async function ({ api, event, args, Users }) {
             type: 'reply',
             name: this.config.name,
             messageID: info.messageID,
-            author: events.senderID,
+            author: event.senderID,
             head: input,
           });
         }, event.messageID);
