@@ -149,7 +149,7 @@ module.exports.run = async function ({ api, event, args, Users }) {
 
     return api.sendMessage({ body: reply }, event.threadID, (error, info) => {
           if (error) {
-            return nayan.sendMessage('An error occurred while processing your request. Please try again later.', event.threadID, event.messageID);
+            return api.sendMessage('An error occurred while processing your request. Please try again later.', event.threadID, event.messageID);
           }
 
           global.client.handleReply.push({
