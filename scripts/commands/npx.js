@@ -4,26 +4,28 @@ module.exports.config = {
   version: "1.0.1",
   hasPermssion: 0,
   credits: "Joy",
-  prefix: "false",
-  description: "Responds to certain emojis with message and audio",
+  description: "Responds to specific words or emojis with audio",
   commandCategory: "no prefix",
-  usages: "🤡",
+  usages: "bristi, 🙂, 😒",
   cooldowns: 5,
+  prefix: false
 };
 
 module.exports.handleEvent = function ({ api, event }) {
   const { threadID, messageID, body } = event;
   if (!body) return;
 
-  const triggers = ["bristi", "bristi", "🙂", "😒"];
-  if (triggers.some(trigger => body.startsWith(trigger))) {
+  const triggers = ["bristi", "🙂", "😒"];
+  const loweredBody = body.toLowerCase();
+
+  if (triggers.some(trigger => loweredBody.startsWith(trigger))) {
     const msg = {
       body: "╭╼|━━━━━━━━━━━━━━|╾╮\n" +
             "╰╼|━━━━━━━━━━━━━━|╾╯",
       attachment: fs.createReadStream(__dirname + `/Joy/JOY12.mp3`)
     };
     api.sendMessage(msg, threadID, () => {
-      api.setMessageReaction("🤡", event.messageID, () => {}, true);
+      api.setMessageReaction("🤡", messageID, () => {}, true);
     });
   }
 };
