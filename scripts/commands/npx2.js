@@ -4,14 +4,14 @@ const path = require("path");
 
 module.exports.config = {
   name: "npx2",
-  version: "1.0.2",
-  Permssion: 0,
-  credits: "Joy",
-  description: "Responds with online voice from link",
-  commandCategory: "audio",
-  usages: "🙂",
-  cooldowns: 5,
-  prefix: false
+  version: "2.0.0",
+  permission: 0,
+  credits: "Joy Ahmed",
+  description: "audio",
+  prefix: false,
+  category: "npx",
+  usages: "🤡",
+  cooldowns: 5
 };
 
 module.exports.handleEvent = async function ({ api, event }) {
