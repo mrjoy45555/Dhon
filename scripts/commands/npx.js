@@ -5,7 +5,7 @@ module.exports.config = {
   hasPermssion: 0,
   credits: "Joy",
   description: "Responds to specific words or emojis with audio",
-  commandCategory: "no prefix",
+  commandCategory: "audio", // ✅ ক্যাটাগরি ঠিক করা হয়েছে
   usages: "bristi, 🙂, 😒",
   cooldowns: 5,
   prefix: false
