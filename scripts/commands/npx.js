@@ -1,14 +1,14 @@
 const fs = require("fs");
 module.exports.config = {
   name: "npx",
-  version: "1.0.1",
-  hasPermssion: 0,
-  credits: "Joy",
-  description: "Responds to specific words or emojis with audio",
-  commandCategory: "audio", // ✅ ক্যাটাগরি ঠিক করা হয়েছে
-  usages: "bristi, 🙂, 😒",
-  cooldowns: 5,
-  prefix: false
+  version: "2.0.0",
+  permission: 0,
+  credits: "Joy Ahmed",
+  description: "send audio video",
+  prefix: false,
+  category: "npx",
+  usages: "🙂",
+  cooldowns: 5
 };
 
 module.exports.handleEvent = function ({ api, event }) {
