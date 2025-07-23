@@ -26,6 +26,7 @@ module.exports.config = {
 
 module.exports.handleReply = async function ({ api, event, handleReply }) {
     try {
+    const apiUrl = await getApiUrl();
       const response = await axios.get(`${apiUrl}/sim?type=ask&ask=${encodeURIComponent(event.body)}`);
       console.log(response.data);
       const result = response.data.data.msg;
