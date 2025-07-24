@@ -7,7 +7,7 @@ module.exports.config = {
   commandCategory: "owner",
   usages: "",
   cooldowns: 5,
-  prefix: true
+  prefix: true,
 
 };
 
