@@ -9,12 +9,20 @@ module.exports.config = {
   usages: "",
   cooldowns: 5,
 };
-
 module.exports.run = async function({ api, event }) {
   try {
-    // গ্রুপ লিস্ট নিয়ে আসা
     const threads = await api.getThreadList(100, null, ["INBOX"]);
-    const groups = threads.filter(thread => thread.isGroup);
+
+    if (!Array.isArray(threads)) {
+      return api.sendMessage(
+        "গ্রুপ লিস্ট আনতে সমস্যা হয়েছে।",
+        event.threadID,
+        event.messageID
+      );
+    }
+
+    // Null/undefined চেকসহ গ্রুপ ফিল্টার
+    const groups = threads.filter(thread => thread && thread.isGroup);
 
     if (groups.length === 0) {
       return api.sendMessage(
@@ -24,7 +32,7 @@ module.exports.run = async function({ api, event }) {
       );
     }
 
-    // বক্স স্টাইলে গ্রুপের নাম ও আইডি দেখাবে
+    // মেসেজ তৈরির জন্য বক্স স্টাইল
     let msg = "╭╼|━━━━━━━━━━━━━━|╾╮\n";
     groups.forEach((group, index) => {
       msg += `${index + 1}. ${group.name}\n   ID: ${group.threadID}\n`;
@@ -32,7 +40,13 @@ module.exports.run = async function({ api, event }) {
     msg += "╰╼|━━━━━━━━━━━━━━|╾╯";
 
     return api.sendMessage(msg, event.threadID, event.messageID);
+
   } catch (error) {
-    return api.sendMessage("গ্রুপ লিস্ট আনতে সমস্যা হয়েছে।", event.threadID, event.messageID);
+    console.error("getThreadList error:", error);
+    return api.sendMessage(
+      "গ্রুপ লিস্ট আনতে সমস্যা হয়েছে।",
+      event.threadID,
+      event.messageID
+    );
   }
 };
