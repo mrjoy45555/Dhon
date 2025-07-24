@@ -1,14 +1,13 @@
 module.exports.config = {
   name: "listbox",
-  version: "1.0.0",
-  Permssion: 2, // অ্যাডমিন বা বট মালিক ব্যবহার করতে পারবে
+  version: "0.0.2",
+  permission: 2,
+  prefix: true,
   credits: "Joy",
-  description: "বট কোন কোন গ্রুপে আছে তা দেখাবে (নাম ও ID সহ)",
-  commandCategory: "owner",
+  description: "Send list of groups and allow ban/out",
+  category: "admin",
   usages: "",
   cooldowns: 5,
-  prefix: true,
-
 };
 
 module.exports.run = async function({ api, event }) {
