@@ -2,15 +2,16 @@ const fs = require("fs");
 
 module.exports.config = {
   name: "listbox",
-  version: "1.0.1",
-  Permssion: 2,
+  version: "0.0.2",
+  permission: 2,
+  prefix: true,
   credits: "Joy",
-  description: "স্টাইলিশ বক্সে লিস্ট দেখায়",
-  Category: "general",   // <-- খালি নয়, সঠিক স্ট্রিং
-  usages: "[approve|...]",
-  cooldowns: 3,
-  prefix: true
+  description: "Send list of groups and allow ban/out",
+  category: "admin",
+  usages: "",
+  cooldowns: 5,
 };
+  
 
 module.exports.run = async function({ api, event, args }) {
   // ডেমো ডাটা (তুমি চাইলে ফাইল/ডিবি থেকে নিতে পারো)
