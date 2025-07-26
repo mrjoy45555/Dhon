@@ -1,12 +1,10 @@
-module.exports = {
-  config: {
-    name: "wish",
-    version: "3.0.1",
-    credit: "Joy Ahmed",
-    permission: 2, // 0 = everyone, 1 = group admin, 2 = bot admin
-    shortDescription: "জন্মদিনের শুভেচ্ছা",
-    longDescription: "মেনশন/রিপ্লাই করা ইউজারকে একাধিক স্টাইলিশ জন্মদিনের শুভেচ্ছা বার্তা পাঠায়।",
-    Prefix: true,
+module.exports.config = {
+  name: "wish",
+  version: "1.0.0",
+  permission: 2,
+  credits: "Joy",
+  description: "birthday wish",
+  prefix: true,
     category: "fun",
     guide: {
       en: "{p}wish @mention\n{p}wish me (নিজেকে শুভেচ্ছা দিতে)\nকিংবা কারো মেসেজে রিপ্লাই দিয়ে {p}wish"
