@@ -1,8 +1,9 @@
 module.exports.config = {
   name: "war",
   version: "1.0.0",
-  Permssion: 2,
   credits: "Joy",
+  Permssion: 2,
+  prefix: true,
   description: "murgi",
   Category: "group",
   usages: "gali",
