@@ -1,13 +1,15 @@
-module.exports.config = {
-  name: "wish",
-  version: "1.0.0",
-  permission: 2,
-  credits: "Joy",
-  description: "birthday wish",
-  prefix: true,
+module.exports = {
+  config: {
+    name: "wish",
+    version: "3.0.2",
+    author: "Joy Ahmed",
+    role: 2, // 0 = everyone, 1 = group admin, 2 = bot admin
+    shortDescription: "জন্মদিনের শুভেচ্ছা",
+    longDescription: "মেনশন/রিপ্লাই/`me` ব্যবহার করে ইউজারকে স্টাইলিশ জন্মদিনের শুভেচ্ছা পাঠায়।",
     category: "fun",
+    Prefix: true,
     guide: {
-      en: "{p}wish @mention\n{p}wish me (নিজেকে শুভেচ্ছা দিতে)\nকিংবা কারো মেসেজে রিপ্লাই দিয়ে {p}wish"
+      en: "{p}wish @mention\n{p}wish me\n(কিংবা কারো মেসেজে রিপ্লাই দিয়ে) {p}wish"
     }
   },
 
@@ -21,13 +23,11 @@ module.exports.config = {
         targetID = mention;
         targetName = event.mentions[mention];
       }
-
       // 2) ".wish me" হলে নিজের আইডি
       else if (args && args[0] && args[0].toLowerCase() === "me") {
         targetID = event.senderID;
         targetName = "তুমি";
       }
-
       // 3) কারো মেসেজে রিপ্লাই দিয়ে কমান্ড দিলে
       else if (event.messageReply && event.messageReply.senderID) {
         targetID = event.messageReply.senderID;
@@ -36,7 +36,11 @@ module.exports.config = {
 
       // না হলে error
       if (!targetID) {
-        return api.sendMessage("❌ যাকে শুভেচ্ছা দিতে চাও তাকে mention করো / `.wish me` লেখো / কারো মেসেজে রিপ্লাই দিয়ে `.wish` দাও!", event.threadID, event.messageID);
+        return api.sendMessage(
+          "❌ যাকে শুভেচ্ছা দিতে চাও তাকে mention করো / `.wish me` লেখো / কারো মেসেজে রিপ্লাই দিয়ে `.wish` দাও!",
+          event.threadID,
+          event.messageID
+        );
       }
 
       const tag = [{ id: targetID, tag: targetName }];
