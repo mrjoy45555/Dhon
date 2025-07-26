@@ -1,18 +1,14 @@
 module.exports.config = {
-  name: "war",
-  version: "1.0.0",
-  credits: "Joy",
-  Permssion: 2,
-  prefix: true,
-  description: "murgi",
-  Category: "group",
-  usages: "gali",
-  cooldowns: 10,
-  dependencies: {
-      "fs-extra": "",
-      "axios": ""
-  }
-}
+	name: "war",
+	version: "1.0.2",
+	permission: 2,
+	credits: "Joy",
+	prefix: true,
+	description: "",
+	category: "war",
+	usages: "war",
+	cooldowns: 5
+};
 
 module.exports.run = async function({ api, args, Users, event}) {
 var mention = Object.keys(event.mentions)[0];
